@@ -3,6 +3,10 @@ var usersRouter = express.Router();
 
 const bodyParser = require('body-parser');
 var User = require('../models/user');
+var UserPassport = require('../models/userPassport');
+
+//pasport
+var passport = require('passport');
 
 usersRouter.use(bodyParser.json());
 
@@ -94,5 +98,32 @@ usersRouter.get('/logout', (req, res) => {
     next(err);
   }
 });
+
+
+//verb passport
+usersRouter.post('/signupPassport', (req, res, next) => {
+  UserPassport.register(new UserPassport({username: req.body.username}), 
+    req.body.password, (err, user) => {
+    if(err) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.json({err: err});
+    }
+    else {
+      passport.authenticate('local')(req, res, () => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({success: true, status: 'Registration Successful!'});
+      });
+    }
+  });
+});
+
+usersRouter.post('/loginPassport', passport.authenticate('local'), (req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/json');
+  res.json({success: true, status: 'You are successfully logged in!'});
+});
+
 
 module.exports = usersRouter;

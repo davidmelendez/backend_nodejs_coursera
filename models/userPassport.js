@@ -2,13 +2,13 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 
-var User = new Schema({
+var UserPassport = new Schema({
     admin:   {
         type: Boolean,
         default: false
     }
 });
 
-User.plugin(passportLocalMongoose);
+UserPassport.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('UserPassport', User);
+module.exports = mongoose.model('UserPassport', UserPassport);

@@ -10,11 +10,20 @@ var authenticate = require('../authenticate');
 //pasport
 var passport = require('passport');
 
+//token
+var authenticate = require('../authenticate');
 usersRouter.use(bodyParser.json());
 
 /* GET users listing. */
-usersRouter.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+usersRouter.route('/')
+.get(authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
+  UserPassport.find({})
+   .then((users) =>{
+    res.statusCode = 202;
+    res.setHeader('Content-Type', 'application/json');
+    res.json(users);
+   }, (err) => next(err))
+   .catch((err) => next(err));
 });
 
 
